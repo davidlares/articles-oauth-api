@@ -1,7 +1,8 @@
 FactoryBot.define do
   factory :article do
-    title { "MyString" }
-    content { "MyText" }
-    slug { "MyString" }
+    # changing Article fake data
+    sequence(:title) {|n| "My awesome article #{n}"}  # sequence helper (makes it unique)
+    sequence(:content) { |n| "The content of my awesome article #{n}" }
+    sequence(:slug) { |n| "my-awesome-article-#{n}" }
   end
 end
