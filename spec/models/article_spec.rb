@@ -30,4 +30,26 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  # new block for recent method (uses . because is a method)
+  describe '.recent' do
+    it "should list recent article first" do
+      # generating articles
+      old_article = create :article
+      newer_article = create :article
+      # expected sort
+      expect(described_class.recent).to eq(
+        [newer_article, old_article] # collection
+      )
+      # changing timestamp
+      old_article.update_column :created_at, Time.now
+      # repeat
+      expect(described_class.recent).to eq(
+        [old_article, newer_article] # collection
+      )
+    end
+  end
+
 end
+
+# using #validations -> test everything that is part of an instance
+# using .recent -> method find on a class - related test (like a method) but is not an instance test

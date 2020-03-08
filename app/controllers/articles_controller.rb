@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   # index method
   def index
     # selecting articles
-    articles = Article.all
+    articles = Article.recent
     render json: articles
   end
   # show method
