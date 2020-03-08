@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   # index method
   def index
     # selecting articles
-    articles = Article.recent
+    articles = Article.recent.page(params[:page]).per(params[:per_page])
     render json: articles
   end
   # show method

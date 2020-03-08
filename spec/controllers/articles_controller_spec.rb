@@ -25,7 +25,6 @@ describe ArticlesController do
         })
       end
     end
-
     it "should return articles in the proper order" do
         # rendering articles in newest to oldest
         old_article = create :article
@@ -35,6 +34,12 @@ describe ArticlesController do
         expect(json_data.first['id']).to eq(newer_article.id.to_s)
         expect(json_data.last['id']).to eq(old_article.id.to_s)
     end
-
+    # pagination results
+    it "should paginate results" do
+      create_list :article, 3
+      get :index, params: {page: 2, per_page: 1}
+      expect(json_data.length).to eq 1
+      expect(json_data.first['id']).to eq(Article.recent.second.id.to_s)
+    end
   end
 end
