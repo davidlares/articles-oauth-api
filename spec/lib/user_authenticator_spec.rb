@@ -39,11 +39,18 @@ describe UserAuthenticator do
         allow_any_instance_of(Octokit::Client).to receive(:exchange_code_for_token).and_return("validaccesstoken")
         allow_any_instance_of(Octokit::Client).to receive(:user).and_return(user_data)
       end
+
       it 'should save the user when does not exists' do
         # at least one user created
         expect{subject}.to change {User.count}.by(1)
         # checking data corresponds to user
         expect(User.last.name).to eq('John Smith')
+      end
+
+      it "should reuse already registered user" do
+        user = create :user, user_data
+        expect {subject}.not_to change {User.count}
+        expect(authenticator.user).to eq(user)
       end
     end
   end
