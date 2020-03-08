@@ -1,6 +1,7 @@
 class UserAuthenticator
   class AuthenticationError < StandardError; end # custom class inheritance
-  attr_reader :user
+
+  attr_reader :user, :access_token
   # handle the whole auth logic
   def initialize(code)
     # code (arg) - exchange for access token
@@ -13,6 +14,13 @@ class UserAuthenticator
       raise AuthenticationError
     else
       prepare_user
+      @access_token = if user.access_token.present?
+        # assign a token if is present
+        user.access_token
+      else
+        user.create_access_token
+      end
+
     end
   end
 
