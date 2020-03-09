@@ -5,6 +5,7 @@ describe 'articles routes' do
     expect(get '/articles').to route_to('articles#index')
   end
   it 'should route to article show' do
-    expect(get '/show/1').to route_to('articles#show', id: '1')
+    # fixing typo here (show/1 to articles/1)
+    expect(get '/articles/1').to route_to('articles#show', id: '1')
   end
 end

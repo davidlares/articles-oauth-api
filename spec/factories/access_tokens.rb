@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :access_token do
-    token { "MyString" }
-    user { nil }
+    # The token is generated after initialization (there's no factory involved)
+    association :user
   end
 end

@@ -7,7 +7,8 @@ class AccessToken < ApplicationRecord
   def generate_token
     # include loop
     loop do
-      break if token.present? && AccessToken.exists?(token: token)
+      # there's a validation for not to look if token exists for user with certain ID
+      break if token.present? && !AccessToken.where.not(id: id).exists?(token: token)
       self.token = SecureRandom.hex(10)
     end
   end

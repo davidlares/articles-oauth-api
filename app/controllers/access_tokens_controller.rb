@@ -10,6 +10,10 @@ class AccessTokensController < ApplicationController
     # rescue UserAuthenticator::AuthenticationError
     #   authentication_error
     # end
+
+    # using the authenticator object - generate an created status
+    render json: authenticator.access_token, status: :created
+
   end
 
   private
