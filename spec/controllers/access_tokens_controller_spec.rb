@@ -1,30 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AccessTokensController, type: :controller do
-  describe '#create' do
+  describe 'POST #create' do
     # helper for common (repetitive) values
-    shared_examples_for "unauthorized_requests" do
-      let(:error) do
-        {
-          # symbols needed
-          "status" => "401",
-          "source" => {"pointer" => "/code"},
-          "title" => "Authentication code is invalid",
-          "detail" => "You must provide a valid code in order to exchange it for token."
-        }
-      end
-      # common cases
-      it 'should return 401 status code' do
-        subject
-        expect(response).to have_http_status(401)
-      end
-
-      it 'should return proper error body' do
-        subject
-        expect(json['errors']).to include(error)
-      end
-    end
-
     context 'when no code provided' do
       subject {post :create}
        # helpers that identifies with the name provided
@@ -45,7 +23,6 @@ RSpec.describe AccessTokensController, type: :controller do
     end
 
     context 'when success request' do
-
       let(:user_data) do
         {
           login: 'jsmith-1',
@@ -78,4 +55,38 @@ RSpec.describe AccessTokensController, type: :controller do
       end
     end
   end
+
+  # handling destroy methods
+  describe 'DELETE #destroy' do
+
+    subject {delete :destroy}
+
+    # refactoring wih shared_examples
+    context 'when no authorization header provided' do
+      it_behaves_like 'forbidden_requests'
+    end
+
+    context 'when invalid authorization header provided' do
+      before {request.headers['authorization'] = 'Invalid token'}
+      it_behaves_like 'forbidden_requests'
+    end
+
+    context 'when valid request' do
+      # variables
+      let(:user) {create :user}
+      let(:access_token) {user.create_access_token}
+
+      #bearer authentication
+      before {request.headers['authorization'] = "Bearer #{access_token.token}" }
+
+      it "should return 204 status code" do
+        subject
+        expect(response).to have_http_status(:no_content)
+      end
+      it "should remove the proper access token" do
+        expect {subject}.to change {AccessToken.count}.by(-1)
+      end
+    end
+  end
+
 end
