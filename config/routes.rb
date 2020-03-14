@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   # exponse endpoints
   post 'login', to: 'access_tokens#create'
   delete 'logout', to: 'access_tokens#destroy'
+
   # adding a resource route (full CRUD)
-  resources :articles, only: [:index, :show]
+  resources :articles
 end
