@@ -3,6 +3,8 @@ class AccessToken < ApplicationRecord
   # after initialization object
   after_initialize :generate_token
 
+  validates :token, presence: true, uniqueness: true
+
   private
   def generate_token
     # include loop

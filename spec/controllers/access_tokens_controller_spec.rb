@@ -2,11 +2,56 @@ require 'rails_helper'
 
 RSpec.describe AccessTokensController, type: :controller do
   describe 'POST #create' do
+
+    let(:params) do
+      {
+        data: {
+          attributes: { login: "jsmith", password: "secret" }
+        }
+      }
+    end
+
     # helper for common (repetitive) values
-    context 'when no code provided' do
+    context 'when no auth_data provided' do
       subject {post :create}
        # helpers that identifies with the name provided
-      it_behaves_like "unauthorized_requests"
+      it_behaves_like "unauthorized_standard_requests"
+    end
+
+    context "when invalid login provided" do
+      let(:user) { create :user, login: 'invalid', password: 'secret' }
+      subject { post :create, params: params }
+
+      before { user }
+
+      it_behaves_like "unauthorized_standard_requests"
+    end
+
+    context "when invalid password provided" do
+      let(:user) { create :user, login: 'jsmith-1', password: 'invalid' }
+      subject { post :create, params: params }
+
+      before { user }
+
+      it_behaves_like "unauthorized_standard_requests"
+    end
+
+    context "when valid data provided" do
+      let(:user) { create :user, login: 'jsmith-1', password: 'password' }
+      subject { post :create, params: params }
+      before { user }
+
+      it 'should return 201 status code' do
+        subject
+        expect(response).to have_http_status(:created)
+      end
+
+      it 'should return proper json body' do
+        subject
+        expect(json_data['attributes']).to eq(
+          { 'token' => user.access_token.token }
+        )
+      end
     end
 
     context 'when invalid code provided' do
@@ -19,7 +64,7 @@ RSpec.describe AccessTokensController, type: :controller do
       # isolated refactor and independency for context
       subject {post :create, params: {code: 'invalid_code'}}
        # helpers that identifies with the name provided
-      it_behaves_like "unauthorized_requests"
+      it_behaves_like "unauthorized_oauth_requests"
     end
 
     context 'when success request' do

@@ -1,56 +1,34 @@
 class UserAuthenticator
   class AuthenticationError < StandardError; end # custom class inheritance
 
-  attr_reader :user, :access_token
+  attr_reader :authenticator, :access_token
+
   # handle the whole auth logic
-  def initialize(code)
+  def initialize(code: nil, login: nil, password: nil)
     # code (arg) - exchange for access token
-    @code = code
+    @authenticator = if code.present?
+      Oauth.new(code)
+    else
+      Standard.new(login, password)
+    end
+
   end
 
   def perform
-      # raising custom error
-      raise AuthenticationError if code.blank?
-      raise AuthenticationError if token.try(:error).present?
-      prepare_user
-      @access_token = if user.access_token.present?
-        # assign a token if is present
-        user.access_token
-      else
-        user.create_access_token
-      end
+      authenticator.perform
+      set_access_token
   end
 
-  # private methods and attributes
+  def user
+    authenticator.user
+  end
+
   private
-
-  def client
-    @client ||= Octokit::Client.new(
-      client_id: ENV['GITHUB_CLIENT_ID'],
-      client_secret: ENV['GITHUB_CLIENT_SECRET']
-    )
-  end
-
-  def token
-    # communicating with Github - grabbing the token
-    @token ||= client.exchange_code_for_token(code)
-  end
-
-  def user_data
-    # token (user/password) then grabbing data via (hashes) after successful connection
-    @user_client ||= Octokit::Client.new(access_token: token).user.to_h.slice(:login, :avatar_url, :url, :name)
-  end
-
-  def prepare_user
-    # find if exists
-    @user = if User.exists?(login: user_data[:login])
-      User.find_by(login: user_data[:login])
+  def set_access_token
+    @access_token = if user.access_token.present?
+      user.access_token
     else
-      # creating users
-      User.create(user_data.merge(provider: 'github'))
+      user.create_access_token
     end
   end
-
-  attr_reader :code
-
 end

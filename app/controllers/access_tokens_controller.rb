@@ -5,7 +5,7 @@ class AccessTokensController < ApplicationController
 
   def create
     # using the authenticator object
-    authenticator = UserAuthenticator.new(params[:code])
+    authenticator = UserAuthenticator.new(authentication_params)
     # begin
     authenticator.perform
     # instead of breaking execution - the content of the rescue it returns
@@ -19,6 +19,16 @@ class AccessTokensController < ApplicationController
 
   def destroy
     current_user.access_token.destroy
+  end
+
+  private
+
+  def authentication_params
+    params.permit(:code).to_h.symbolize_keys # standard ruby hash
+  end
+
+  def standard_auth_params
+    params.dig(:data, :attributes)&.permit(:login, :password)
   end
 
 end

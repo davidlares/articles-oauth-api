@@ -4,7 +4,7 @@ class ArticlesController < ApplicationController
   # index method
   def index
     # selecting articles
-    articles = Article.recent.page(params[:page]).per(params[:per_page])
+    articles = Article.recent.page(current_page).per(per_page)
     render json: articles
   end
   # show method
@@ -16,12 +16,10 @@ class ArticlesController < ApplicationController
     # logic
     article = current_user.articles.build(article_params)
     article.save!
-      render json: article, status: :created
+    render json: article, status: :created
   rescue
-      # returning data with serializer error (custom) and the JSON standard
-      render json: article, adapter: :json_api,
-        serializer: ErrorSerializer,
-        status: :unprocessable_entity
+    # returning data with serializer error (custom) and the JSON standard
+    render json: article, adapter: :json_api, serializer: ErrorSerializer, status: :unprocessable_entity
   end
 
   def update

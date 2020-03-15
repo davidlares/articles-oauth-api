@@ -19,6 +19,6 @@ describe 'articles routes' do
   end
   # deleting
   it "should route to articles destroy" do
-    expect(delete, '/articles/1').to route_to('articles#destroy', id: '1')
+    expect(delete '/articles/1').to route_to('articles#destroy', id: '1')
   end
 end
