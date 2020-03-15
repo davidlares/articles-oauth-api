@@ -7,7 +7,7 @@ ruby '2.6.0'
 gem 'rails', '~> 5.2.0'
 
 # Use Puma as the app server
-gem 'puma', '~> 3.11'
+gem 'puma', '~> 3.12'
 gem 'rspec-rails'
 gem 'factory_bot_rails'
 gem 'active_model_serializers' # this will let you manage and change the returning a changed format of data
