@@ -35,7 +35,7 @@ Following the development cycle used, the thing goes like this.
 
 The structure of the JSON contains the `data` and the consequent `attribute` JSON object in order to pass user data to the API, for example:
 
-1. `/login`
+1. `/login`: login process
 2. `/articles` resource: the whole CRUD routes available
 3. `/articles/{id}/comments` for posting and listing generated comments on certain article
 4. Other like `/logout` (for leaving API), and `/sign_up` for registration
@@ -43,10 +43,6 @@ The structure of the JSON contains the `data` and the consequent `attribute` JSO
 You will need to add the `Bearer XXXXX` for the authorization needed in certain endpoints (this goes in the HTTP Header section)
 
 The the `spec/routes` for better understanding, it's quite easy.
-
-### Login
-
-`POST /login`
 
 ## Credits
 
