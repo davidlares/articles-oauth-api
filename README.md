@@ -1,4 +1,4 @@
-## Article's Oauth API
+## Articles' Oauth API
 
 The following material is part of a workshop for revisiting `RoR` concepts and `REST foundations` with a practical Article's API with its associated comments. The very strong focus of the workshop was on handling `TDD practices` and `API development` as well.
 
